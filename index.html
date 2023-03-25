@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Uniswap Price Dashboard</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>Uniswap Prices</h1>
+  <div id="prices"></div>
+
+  <script>
+    fetch('https://gateway.thegraph.com/api/8af739497c81cf4edebd3a92165a1a73/subgraphs/id/ELUcwgpm14LKPLrBRuVvPvNKHQ9HvwmtKgKSH6123cr7', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query: `
+            {
+            tokens(where: {symbol_contains: "ETH", lastPriceUSD_gt: "1"}) {
+                name
+                symbol
+                lastPriceUSD
+            }
+            }
+            `
+        })
+        })
+        .then(response => response.json())
+        .then(data => {
+        console.log(data);
+        })
+        .catch(error => {
+        console.error(error);
+        });
+
+  </script>
+</body>
+</html>
