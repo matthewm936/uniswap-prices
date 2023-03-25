@@ -10,14 +10,21 @@
 
   <script>
     fetch('https://gateway.thegraph.com/api/8af739497c81cf4edebd3a92165a1a73/subgraphs/id/ELUcwgpm14LKPLrBRuVvPvNKHQ9HvwmtKgKSH6123cr7', {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
             query: `
             {
-            tokens(where: {symbol_contains: "ETH", lastPriceUSD_gt: "1"}) {
+            ethTokens: tokens(where: {symbol_contains: "ETH", lastPriceUSD_gt: "1"}) {
+                id
+                name
+                symbol
+                lastPriceUSD
+            }
+            btcTokens: tokens(where: {symbol_contains: "BTC", lastPriceUSD_gt: "1"}) {
+                id
                 name
                 symbol
                 lastPriceUSD
@@ -28,12 +35,53 @@
         })
         .then(response => response.json())
         .then(data => {
-        console.log(data);
+        // create the table rows using a loop
+        let tableBody = document.querySelector("#table-body");
+        data.data.ethTokens.forEach(token => {
+            let row = tableBody.insertRow();
+            let cell1 = row.insertCell();
+            let cell2 = row.insertCell();
+            let cell3 = row.insertCell();
+            let cell4 = row.insertCell();
+            cell1.textContent = token.id;
+            cell2.textContent = token.name;
+            cell3.textContent = token.symbol;
+            cell4.textContent = token.lastPriceUSD;
+        });
+        data.data.btcTokens.forEach(token => {
+            let row = tableBody.insertRow();
+            let cell1 = row.insertCell();
+            let cell2 = row.insertCell();
+            let cell3 = row.insertCell();
+            let cell4 = row.insertCell();
+            cell1.textContent = token.id;
+            cell2.textContent = token.name;
+            cell3.textContent = token.symbol;
+            cell4.textContent = token.lastPriceUSD;
+        });
         })
         .catch(error => {
-        console.error(error);
+        console.log(error);
         });
 
+        // append the table to the #prices div
+        let table = document.querySelector("#data-table");
+        let pricesDiv = document.querySelector("#prices");
+        pricesDiv.appendChild(table);
   </script>
+
+<table id="data-table">
+    <thead>
+      <tr>
+        <th>Token ID</th>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Price in USD</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+  </table>
+  
 </body>
 </html>
